@@ -1,15 +1,14 @@
 // переменные
-export const cardTemplate = document.querySelector('#card-template').content;
-export const cardList = document.querySelector('.places__list');
+const cardTemplate = document.querySelector('#card-template').content;
 
 // функция удаления карточки
-export function deleteCard (evt) {
+function deleteCard (evt) {
   const eventTarget = evt.target;
   eventTarget.closest('.card').remove();
 };
 
 // функция лайка
-export function likeButtonFunction (evt) {
+function likeButtonFunction (evt) {
   const buttonTarget = evt.target;
   buttonTarget.classList.toggle('card__like-button_is-active');
 };

@@ -1,14 +1,7 @@
-// в файле index.js описана инициализация приложения и основная логика страницы: 
-// поиск DOM-элементов на странице и навешивание на них обработчиков событий; 
-// обработчики отправки форм, 
-// функция-обработчик события открытия модального окна для редактирования профиля; 
-// функция открытия модального окна изображения карточки. 
-// Также в index.js находится код, который отвечает за отображение шести карточек при открытии страницы.
-
 //импорты
 import './pages/index.css';
 
-import { cardList, deleteCard, createCard, likeButtonFunction } from './components/card.js';
+import { createCard } from './components/card.js';
 import { initialCards } from './cards.js'
 import { openModal, closeModal } from './components/modal.js'
 
@@ -29,6 +22,7 @@ const jobInput = profileForm.querySelector('.popup__input_type_description');
 const cardName = cardForm.querySelector('.popup__input_type_card-name');
 const cardLink = cardForm.querySelector('.popup__input_type_url');
 const popups = document.querySelectorAll('.popup');
+const cardList = document.querySelector('.places__list');
 
 // загрузка карточек на страницу
 function renderCard(method = "append") {
