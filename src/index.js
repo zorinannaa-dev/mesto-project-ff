@@ -17,7 +17,6 @@ const popUpTypeImage = document.querySelector('.popup_type_image');
 const titleForImage = document.querySelector('.popup__caption');
 const popUpImage = document.querySelector('.popup__image');
 const popUpEdit = document.querySelector('.popup_type_edit');
-const allPopUps = document.querySelectorAll('.popup');
 const profileAddButton = document.querySelector('.profile__add-button');
 const profileEditButton = document.querySelector('.profile__edit-button');
 const popUpNewCard = document.querySelector('.popup_type_new-card');
@@ -41,7 +40,7 @@ function renderCard(method = "append") {
 renderCard();
 
 // добавление плавности
-allPopUps.forEach((item) => {
+popups.forEach((item) => {
   item.classList.add('popup_is-animated');
 });
 
@@ -101,7 +100,6 @@ function openImageFunction (cardData) {
 // глобальные слушатели
 cardForm.addEventListener('submit', function(evt){ handleFormSubmitCard(evt) });
 profileForm.addEventListener('submit', function(evt){ handleProfileFormSubmit(evt) });
-
 
 // функции-обработчики событий открытия
 profileAddButton.addEventListener('click', openAddPopUp );
