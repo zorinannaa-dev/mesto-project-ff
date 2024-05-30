@@ -1,9 +1,11 @@
 //импорты
 import './pages/index.css';
 
+import { enableValidation, validationSettings } from './validation.js';
+
 import { createCard } from './components/card.js';
-import { initialCards } from './cards.js'
-import { openModal, closeModal } from './components/modal.js'
+import { initialCards } from './cards.js';
+import { openModal, closeModal } from './components/modal.js';
 
 // переменные
 const popUpTypeImage = document.querySelector('.popup_type_image');
@@ -113,3 +115,7 @@ popups.forEach((popup) => {
         }
     })
 })
+
+// вызов валидации форм
+enableValidation(validationSettings); 
+
