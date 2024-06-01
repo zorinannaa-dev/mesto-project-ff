@@ -51,9 +51,9 @@
               placeholder="Имя"
               minlength="2"
               maxlength="40"
-              required
-              pattern="/[a-zA-Zа-яёА-ЯЁ\-\s]/g"
+              pattern="[A-Za-zА-Яа-яЁё,.]+([\s\-][A-Za-zА-Яа-яЁё,.]+)*"
               data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+              required
             />
             <span class="name-textfield-error"></span>
             <input
@@ -65,7 +65,7 @@
               minlength="2"
               maxlength="200"
               required
-              pattern="/[a-zA-Zа-яёА-ЯЁ\-\s]/g"
+              pattern="[A-Za-zА-Яа-яЁё,.]+([\s\-][A-Za-zА-Яа-яЁё,.]+)*"
               data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
             />
             <span class="description-textfield-error"></span>
@@ -89,7 +89,8 @@
               minlength="2"
               maxlength="30"
               required
-              pattern="/[a-zA-Zа-яёА-ЯЁ\-\s]/g"
+              pattern="[A-Za-zА-Яа-яЁё,.]+([\s\-][A-Za-zА-Яа-яЁё,.]+)*"
+              data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
             />
             <span class="newPlaceName-textfield-error"></span>
             <input
@@ -115,7 +116,7 @@
         </div>
       </div>
     </div>
-    <script type="module" src="../dist/main.js"></script>
+    <script type="module" src="index.js"></script>
 
     <template id="card-template">
       <li class="places__item card">

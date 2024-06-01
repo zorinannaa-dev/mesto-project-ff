@@ -1,7 +1,9 @@
 //импорты
 import './pages/index.css';
+import './api.js';
 
-import { enableValidation, validationSettings } from './validation.js';
+import { enableValidation, clearValidation, validationSettings } from './validation.js';
+import { promises, addCard, newUserData } from './api.js';
 
 import { createCard } from './components/card.js';
 import { initialCards } from './cards.js';
@@ -31,9 +33,24 @@ function renderCard(method = "append") {
   initialCards.forEach((item) => {
   const cardElement = createCard(item, openImageFunction);
   cardList[ method ](cardElement);
-  } )
+  })
 }
 renderCard();
+
+// Передаём массив с промисами методу Promise.all
+Promise.all(promises)
+    .then(([cards, user]) => {
+      cards.forEach((card) => {
+        let data = {
+          name: card.name,
+          link: card.link,
+          alt: card.name,
+        }
+        const cardElement = createCard(data, openImageFunction);
+        cardList.prepend(cardElement);
+      })
+    })
+    .catch(() => console.log('все пошло не по плану'))
 
 // добавление плавности
 popups.forEach((item) => {
@@ -51,6 +68,7 @@ function handleProfileFormSubmit(evt) {
   profileTitle.textContent = name;
   profileDescription.textContent = job;
 
+  newUserData(name, job);
   closeModal(popUpEdit);
 }
 
@@ -63,6 +81,7 @@ function handleFormSubmitCard(evt) {
     alt: cardName.value,
   };
 
+  addCard(newcardData);
   const cardElement = createCard(newcardData, openImageFunction);
   cardList.prepend(cardElement);
   cardForm.reset();
@@ -73,11 +92,13 @@ function handleFormSubmitCard(evt) {
 // функция открытия попапа для создания карточки
 function openAddPopUp () {
   openModal(popUpNewCard);
+  clearValidation(popUpNewCard, validationSettings);
 }
 
 // функция открытия попапа для редактирования профиля
 function openEditPopUp (){
   openModal(popUpEdit);
+  clearValidation(popUpEdit, validationSettings);
 
   if ((nameInput.value !== null) && (jobInput.value !== null)) {
     nameInput.value = profileTitle.textContent;
@@ -98,8 +119,8 @@ cardForm.addEventListener('submit', function(evt){ handleFormSubmitCard(evt) });
 profileForm.addEventListener('submit', function(evt){ handleProfileFormSubmit(evt) });
 
 // функции-обработчики событий открытия
-profileAddButton.addEventListener('click', openAddPopUp );
-profileEditButton.addEventListener('click', openEditPopUp );
+profileAddButton.addEventListener('click', openAddPopUp);
+profileEditButton.addEventListener('click', openEditPopUp);
 
 // функции-обработчики событий закрытия
 popups.forEach((popup) => {
