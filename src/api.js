@@ -36,22 +36,21 @@ export function getUserInfo () {
 export const promises = [getCardsList(), getUserInfo()]
 
 // запрос на редактирование профиля
-export function newUserData (name, job) {
+export function newUserData ({name, about}) {
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
       name: name,
-      about: job,
+      about: about,
     })
     })
     .then(res => {
       if (res.ok) {
-        return res.json();
+        return res.json()
       }
       return Promise.reject(`Ошибка: ${res.status}`);
     })
-    .then(res => console.log(res))
     .catch((err) => console.log(err))
 }
 
@@ -72,5 +71,21 @@ export function addCard ({name, link}) {
     }
     return Promise.reject(`Ошибка: ${res.status}`);
   })
+  .catch((err) => console.log(err))
+}
+
+// запрос на удаление карточки
+export function deleteCard (cardId) {
+  fetch(`${config.baseUrl}/cards/${cardId}`, {
+    method: 'DELETE',
+    headers: config.headers,
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
+  })
+  .then(() => location.reload())
   .catch((err) => console.log(err))
 }

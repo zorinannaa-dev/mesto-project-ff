@@ -2,11 +2,10 @@
 import './pages/index.css';
 import './api.js';
 
-import { enableValidation, clearValidation, validationSettings } from './validation.js';
-import { promises, addCard, newUserData } from './api.js';
+import { enableValidation, clearValidation } from './validation.js';
+import { promises, addCard, newUserData, deleteCard } from './api.js';
 
 import { createCard } from './components/card.js';
-import { initialCards } from './cards.js';
 import { openModal, closeModal } from './components/modal.js';
 
 // переменные
@@ -28,29 +27,18 @@ const cardLink = cardForm.querySelector('.popup__input_type_url');
 const popups = document.querySelectorAll('.popup');
 const cardList = document.querySelector('.places__list');
 
-// загрузка карточек на страницу
-function renderCard(method = "append") {
-  initialCards.forEach((item) => {
-  const cardElement = createCard(item, openImageFunction);
-  cardList[ method ](cardElement);
-  })
+// настройки валидации 
+const validationSettings = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
 }
-renderCard();
 
-// Передаём массив с промисами методу Promise.all
-Promise.all(promises)
-    .then(([cards, user]) => {
-      cards.forEach((card) => {
-        let data = {
-          name: card.name,
-          link: card.link,
-          alt: card.name,
-        }
-        const cardElement = createCard(data, openImageFunction);
-        cardList.prepend(cardElement);
-      })
-    })
-    .catch(() => console.log('все пошло не по плану'))
+// вызов валидации форм
+enableValidation(validationSettings); 
 
 // добавление плавности
 popups.forEach((item) => {
@@ -61,15 +49,14 @@ popups.forEach((item) => {
 // функции сабмита
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
-
-  const name = nameInput.value;
-  const job = jobInput.value;
-
-  profileTitle.textContent = name;
-  profileDescription.textContent = job;
-
-  newUserData(name, job);
-  closeModal(popUpEdit);
+  
+  newUserData({name: nameInput.value, about: jobInput.value})
+    .then(userInfo => {
+      profileTitle.textContent = userInfo.name;
+      profileDescription.textContent = userInfo.about;
+      closeModal(popUpEdit);
+    })
+    .catch((err) => console.log(err))
 }
 
 function handleFormSubmitCard(evt) {
@@ -137,6 +124,30 @@ popups.forEach((popup) => {
     })
 })
 
-// вызов валидации форм
-enableValidation(validationSettings); 
+// Передаём массив с промисами методу Promise.all
+Promise.all(promises)
+    .then(([cards, user]) => {
+      let userData = {
+        name: user.name,
+        about: user.about,
+        id: user._id,
+      }
+      newUserData(userData.name, userData.about);
+      cards.forEach((card) => {
+        
+        const likesData = card.likes
 
+        const data = {
+          name: card.name,
+          link: card.link,
+          alt: card.name,
+          id: card._id,
+          ownerID: card.owner._id,
+        }
+
+        const cardElement = createCard(data, userData.id, data.ownerID, openImageFunction, deleteCard, likesData);
+        cardList.append(cardElement);
+      })
+
+    })
+    .catch((err) => console.log(err))

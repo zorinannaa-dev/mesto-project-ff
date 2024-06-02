@@ -64,16 +64,6 @@ function setEventListeners (formElement) {
   });
 };
 
-// настройки валидации 
-export const validationSettings = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-}
-
 // функция активации валидации
 export function enableValidation(settings){
   const formList = Array.from(document.querySelectorAll(settings.formSelector));
