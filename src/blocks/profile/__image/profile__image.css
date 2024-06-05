@@ -7,6 +7,44 @@
   background-size: cover;
   background-position: center;
   margin: 0 29px 0 0;
+  object-fit: cover;
+  object-position: center;
+}
+
+.edit-logo {
+  position: relative;
+}
+
+.edit-logo::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1;
+  visibility: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+.edit-logo::after {
+  content: "";
+  background: url("../../../images/edit-icon.svg") no-repeat center;
+  position: absolute;
+  top: 40%;
+  left: 35%;
+  width: 17%;
+  aspect-ratio: 1 / 1;
+  z-index: 2;
+  visibility: hidden;
+  background-size: contain;
+}
+
+.edit-logo:hover::after,
+.edit-logo:hover::before,
+.profile__image:hover {
+  visibility: visible;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 740px) {

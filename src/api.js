@@ -7,7 +7,7 @@ const config = {
 }
 
 // функция получения массива карточек
-export function getCardsList () {
+function getCardsList () {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   }) 
@@ -20,7 +20,7 @@ export function getCardsList () {
 };
 
 // функция получения данных пользователя
-export function getUserInfo () {
+function getUserInfo () {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
   }) 
@@ -56,7 +56,7 @@ export function newUserData ({name, about}) {
 
   // запрос на добавление новой карточки
 export function addCard ({name, link}) {
-  fetch(`${config.baseUrl}/cards`, {
+  return fetch(`${config.baseUrl}/cards`, {
     method: 'POST',
     headers: config.headers,
     body: JSON.stringify({
@@ -76,7 +76,7 @@ export function addCard ({name, link}) {
 
 // запрос на удаление карточки
 export function deleteCard (cardId) {
-  fetch(`${config.baseUrl}/cards/${cardId}`, {
+  return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: 'DELETE',
     headers: config.headers,
   })
@@ -87,5 +87,53 @@ export function deleteCard (cardId) {
     return Promise.reject(`Ошибка: ${res.status}`);
   })
   .then(() => location.reload())
+  .catch((err) => console.log(err))
+}
+
+// запрос на постановку лайка 
+export function putLike (cardId) {
+  fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    method: 'PUT',
+    headers: config.headers,
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
+  })
+  .catch((err) => console.log(err))
+}
+
+// запрос на удаления отметки лайка
+export function deleteLike (cardId) {
+  fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    method: 'DELETE',
+    headers: config.headers,
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
+  })
+  .catch((err) => console.log(err))
+}
+
+// запрос на обновленине аватарки
+export function changeAvatar (link) {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({
+      avatar: link,
+    })
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
+  })
   .catch((err) => console.log(err))
 }

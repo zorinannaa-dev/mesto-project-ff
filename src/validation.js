@@ -6,36 +6,36 @@ function hasInvalidInput (inputList) {
 };
 
 // прячет сообщение об ошибке
-function hideInputError (formElement, inputElement) {
+function hideInputError (formElement, inputElement, inputError, errorVisible) {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
 
-    inputElement.classList.remove('popup__input_type_error');
-    errorElement.classList.remove('popup__error_visible');
+    inputElement.classList.remove(inputError);
+    errorElement.classList.remove(errorVisible);
     errorElement.textContent = '';
 };
 
 // показывает сообщения об ошибке
-function showInputErrorMessage (formElement, inputElement, errorMessage) {
+function showInputErrorMessage (formElement, inputElement, inputError, errorVisible, errorMessage) {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
 
-  inputElement.classList.add('popup__input_type_error');
-  errorElement.classList.add('popup__error_visible');
+  inputElement.classList.add(inputError);
+  errorElement.classList.add(errorVisible);
   errorElement.textContent = errorMessage;
 };
 
 // регулирует активацию кнопки отправки формы
-function toggleButtonFunc (inputList, buttonElement) {
+function toggleButtonFunc (inputList, buttonElement, buttonDisabled) {
   if (hasInvalidInput(inputList)) {
     buttonElement.disabled = true;
-    buttonElement.classList.add('popup__button_disabled');
+    buttonElement.classList.add(buttonDisabled);
     } else {
     buttonElement.disabled = false;
-    buttonElement.classList.remove('popup__button_disabled');
+    buttonElement.classList.remove(buttonDisabled);
   };
 };
 
 // проверяет валидность формы
-function isValid (formElement, inputElement) {
+function isValid (formElement, inputElement, inputError, errorVisible) {
   if (inputElement.validity.patternMismatch) {
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
   } else {
@@ -43,23 +43,20 @@ function isValid (formElement, inputElement) {
   };
 
   if (!inputElement.validity.valid) {
-    showInputErrorMessage(formElement, inputElement, inputElement.validationMessage)
+    showInputErrorMessage(formElement, inputElement, inputError, errorVisible, inputElement.validationMessage)
   } else {
-    hideInputError(formElement, inputElement);
+    hideInputError(formElement, inputElement, inputError, errorVisible);
   };
 };
 
 // добавляет слушатель на инпут и вешает коллбэк на проверку валидности формы
-function setEventListeners (formElement) {
-  const inputList = Array.from(formElement.querySelectorAll('.popup__input'));
-  const buttonElement = formElement.querySelector('.popup__button');
+function setEventListeners (formElement, popUpInput, button, buttonDisabled, inputError, errorVisible) {
+  toggleButtonFunc(popUpInput, button, buttonDisabled);
 
-  toggleButtonFunc(inputList, buttonElement);
-
-  inputList.forEach((inputElement) => {
+  popUpInput.forEach((inputElement) => {
     inputElement.addEventListener('input', () => {
-      isValid(formElement, inputElement);
-      toggleButtonFunc(inputList, buttonElement);
+      isValid(formElement, inputElement, inputError, errorVisible);
+      toggleButtonFunc(popUpInput, button, buttonDisabled);
     });
   });
 };
@@ -69,7 +66,9 @@ export function enableValidation(settings){
   const formList = Array.from(document.querySelectorAll(settings.formSelector));
 
   formList.forEach((formElement) => {
-    setEventListeners(formElement);
+    const inputList = Array.from(formElement.querySelectorAll(settings.inputSelector));
+    const buttonElement = formElement.querySelector(settings.submitButtonSelector);
+    setEventListeners(formElement, inputList, buttonElement, settings.inactiveButtonClass, settings.inputErrorClass, settings.errorClass);
     })
   };
 
@@ -78,6 +77,6 @@ export function clearValidation(form, settings){
   const inputList = Array.from(form.querySelectorAll(settings.inputSelector));
 
   inputList.forEach((input) => {
-    hideInputError (form, input);
+    hideInputError (form, input, settings.inputErrorClass, settings.errorClass);
   });
 };
