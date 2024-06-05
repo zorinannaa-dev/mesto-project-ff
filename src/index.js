@@ -1,12 +1,13 @@
 //импорты
 import './pages/index.css';
-import './api.js';
+import './components/api.js';
 
-import { enableValidation, clearValidation } from './validation.js';
-import { promises, addCard, newUserData, deleteCard, putLike, deleteLike, changeAvatar } from './api.js';
+import { enableValidation, clearValidation } from './components/validation.js';
+import { promises, addCard, newUserData, deleteCard, putLike, deleteLike, changeAvatar } from './components/api.js';
 
 import { createCard } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
+import { loadingActive, loadingDisabled } from './components/utils.js'
 
 // переменные
 const popUpTypeImage = document.querySelector('.popup_type_image');
@@ -51,17 +52,6 @@ popups.forEach((item) => {
 });
 
 // работа со всплывающими окнами
-// функция уведомления об отправке данных
-function loadingActive (form){
-  const submitButton = form.querySelector('.popup__button');
-  submitButton.textContent = 'Сохранение...'
-}
-
-function loadingDisabled (form){
-  const submitButton = form.querySelector('.popup__button');
-  submitButton.textContent = 'Сохранить'
-}
-
 // функции сабмита
 function handleProfileFormSubmit(evt, form) {
   evt.preventDefault();
@@ -100,15 +90,14 @@ function handleFormSubmitCard(evt, form) {
       const cardElement = createCard(cardData, cardData.ownerID, openImageFunction, deleteCard, putLike, deleteLike);
       cardList.prepend(cardElement);
       cardForm.reset();
+      closeModal(popUpNewCard);
   })
     .finally(() => loadingDisabled(form));
-
-  closeModal(popUpNewCard);
 }
 
 function handleFormSubmitAvatar(evt, form) {
   evt.preventDefault();
-  loadingActive(form)
+  loadingActive(form);
 
   const newAvatarLink = avatarLink.value;
 
@@ -118,13 +107,14 @@ function handleFormSubmitAvatar(evt, form) {
       closeModal(popUpNewAvatar);
     })
     .finally(() => loadingDisabled(form))
-    form.reset();
 }
 
 // функция открытия попапа для обновления аватара
 function openAvatarPopUp () {
   openModal(popUpNewAvatar);
+  avatarForm.reset();
   clearValidation(popUpNewAvatar, validationSettings);
+
 }
 
 // функция открытия попапа для создания карточки
@@ -181,7 +171,7 @@ popups.forEach((popup) => {
 // Передаём массив с промисами методу Promise.all
 Promise.all(promises)
     .then(([cards, user]) => {
-      let userData = {
+      const userData = {
         name: user.name,
         about: user.about,
         id: user._id,

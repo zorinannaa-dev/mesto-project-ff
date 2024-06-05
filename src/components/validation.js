@@ -79,4 +79,5 @@ export function clearValidation(form, settings){
   inputList.forEach((input) => {
     hideInputError (form, input, settings.inputErrorClass, settings.errorClass);
   });
+  enableValidation(settings)
 };

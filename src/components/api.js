@@ -6,17 +6,20 @@ const config = {
   }
 }
 
+// функция проверки статуса ответа сервера
+function serverStatus (res) {
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка: ${res.status}`);
+}
+
 // функция получения массива карточек
 function getCardsList () {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   }) 
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  .then(res => serverStatus(res))
 };
 
 // функция получения данных пользователя
@@ -24,12 +27,7 @@ function getUserInfo () {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
   }) 
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  .then(res => serverStatus(res))
 };
 
 // Создаём массив с промисами
@@ -45,13 +43,7 @@ export function newUserData ({name, about}) {
       about: about,
     })
     })
-    .then(res => {
-      if (res.ok) {
-        return res.json()
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => console.log(err))
+    .then(res => serverStatus(res))
 }
 
   // запрос на добавление новой карточки
@@ -65,13 +57,7 @@ export function addCard ({name, link}) {
       alt: name,
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch((err) => console.log(err))
+  .then(res => serverStatus(res))
 }
 
 // запрос на удаление карточки
@@ -80,44 +66,25 @@ export function deleteCard (cardId) {
     method: 'DELETE',
     headers: config.headers,
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .then(() => location.reload())
-  .catch((err) => console.log(err))
+  .then(res => serverStatus(res))
 }
 
 // запрос на постановку лайка 
 export function putLike (cardId) {
-  fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: 'PUT',
     headers: config.headers,
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch((err) => console.log(err))
+  .then(res => serverStatus(res))
 }
 
 // запрос на удаления отметки лайка
 export function deleteLike (cardId) {
-  fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: 'DELETE',
     headers: config.headers,
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch((err) => console.log(err))
+  .then(res => serverStatus(res))
 }
 
 // запрос на обновленине аватарки
@@ -129,11 +96,5 @@ export function changeAvatar (link) {
       avatar: link,
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch((err) => console.log(err))
+  .then(res => serverStatus(res))
 }

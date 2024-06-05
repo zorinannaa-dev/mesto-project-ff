@@ -4,19 +4,34 @@ const cardTemplate = document.querySelector('#card-template').content;
 // отправка на сервер состояния лайка
 function changeLikeStatus (cardData, button, putLike, deleteLike, likeButton, likeValue) {
   if (button.classList.contains('card__like-button_is-active')) {
-    likeButton.classList.remove('card__like-button_is-active');
-    likeValue.textContent = cardData.likesData.length -= 1;
     deleteLike(cardData.id)
+      .then(() => {
+        likeButton.classList.remove('card__like-button_is-active');
+        likeValue.textContent = cardData.likesData.length -= 1;
+      })
+      .catch((err) => console.log(err))
   } else if (!button.classList.contains('card__like-button_is-active')) {
-    likeButton.classList.add('card__like-button_is-active');
-    likeValue.textContent = cardData.likesData.length += 1;
     putLike(cardData.id)
+      .then(() => {
+        likeButton.classList.add('card__like-button_is-active');
+        likeValue.textContent = cardData.likesData.length += 1;
+      })
+      .catch((err) => console.log(err))
   }
 };
 
+// функция обновления массива карточек
+function refreshCards (button) {
+  button.closest('.card').remove();
+};
+
 //функция удаления карточки 
-function deleteThisCard (cardID, deleteCardFunc) {
+function deleteThisCard (cardID, deleteCardFunc, button) {
   deleteCardFunc(cardID)
+    .then(() => {
+      refreshCards(button);
+    })
+    .catch((err) => console.log(err))
 }
 
 // функция создания новой карточки
@@ -42,7 +57,7 @@ export function createCard (cardData, userId, openFunc, deleteCard, putLike, del
     deleteButton.classList.add('card__delete-button-hidden')
   } else {
     deleteButton.classList.remove('card__delete-button-hidden')
-    deleteButton.addEventListener('click', () => deleteThisCard(cardData.id, deleteCard))
+    deleteButton.addEventListener('click', () => deleteThisCard(cardData.id, deleteCard, deleteButton))
   }
   
   likeButton.addEventListener('click', () => { changeLikeStatus(cardData, likeButton, putLike, deleteLike, likeButton, likeValue) });
